@@ -3822,17 +3822,17 @@ const PACS=(function(){
   /* Regras: [campo, rótulo, classe de unidade, códigos LOINC, regex, regex de exclusão, faixa plausível].
      A ordem importa: regras específicas primeiro. Cobre nomes padrão DICOM (TID 5200) e abreviações Philips. */
   const RULES=[
-    ['SIVs','Septo IV sistólico','len',['18158-5'],/IVS\s*s\b|IVSs|septum.*(systol)/i,null,[2,45]],
-    ['SIV','Septo interventricular (SIV)','len',['18154-4'],/\bIVS\s*d?\b|IVSd|interventricular septum|septal (wall )?thickness/i,/systol|IVSs|IVS\s*s\b|vel|strain|e['’′]/i,[2,45]],
-    ['PPVEs','Parede posterior sistólica','len',['18156-9'],/LVPW\s*s\b|LVPWs|posterior wall.*systol/i,null,[2,45]],
-    ['PP','Parede posterior (PP)','len',['18152-8'],/LVPW|posterior wall/i,/systol|LVPWs|LVPW\s*s\b|vel|strain/i,[2,45]],
-    ['DSVE','Diâmetro telessistólico (DSVE)','len',['29438-9'],/LVID\s*s\b|LVIDs|LVESD|internal (end )?systolic dimension|(LVID|internal dimension).*systol/i,/index|\/\s*BSA|vol/i,[8,90]],
-    ['DDVE','Diâmetro telediastólico (DDVE)','len',['29436-3'],/LVID|LVEDD|internal (end )?diastolic dimension|left ventricle internal/i,/systol|LVIDs|LVID\s*s\b|index|\/\s*BSA|vol/i,[12,110]],
-    ['FEsimp','Fração de ejeção (Simpson)','pct',[],/(EF|ejection fraction).*(MOD|simpson|dis[kc]s?|bi-?plane|\bBP\b|A4C|A2C)|(MOD|simpson|dis[kc]s?|bi-?plane).*(EF|ejection fraction)|auto\s*EF|\baEF\b/i,/teich|cube|\bRV\b|right/i,[5,95]],
+    ['SIVs','Septo IV sistólico','len',['18158-5'],/IVS\s*s\b|IVSs|septum.*(systol)|\bSIV\s*s\b|SIVs|septo.*sist/i,null,[2,45]],
+    ['SIV','Septo interventricular (SIV)','len',['18154-4'],/\bIVS\s*d?\b|IVSd|interventricular septum|septal (wall )?thickness|\bSIV\s*d?\b|SIVd|septo interv/i,/systol|IVSs|IVS\s*s\b|SIVs|SIV\s*s\b|sist|vel|strain|e['’′]/i,[2,45]],
+    ['PPVEs','Parede posterior sistólica','len',['18156-9'],/LVPW\s*s\b|LVPWs|posterior wall.*systol|PPVE\s*s\b|PPVEs|parede posterior.*sist/i,null,[2,45]],
+    ['PP','Parede posterior (PP)','len',['18152-8'],/LVPW|posterior wall|\bPPVE\s*d?\b|PPVEd|\bPP\s*d\b|parede posterior/i,/systol|LVPWs|LVPW\s*s\b|PPVEs|PPVE\s*s\b|sist|vel|strain/i,[2,45]],
+    ['DSVE','Diâmetro telessistólico (DSVE)','len',['29438-9'],/LVID\s*s\b|LVIDs|LVESD|internal (end )?systolic dimension|(LVID|internal dimension).*systol|\bDIVE\s*s\b|DIVEs|\bDSVE\b|di[aâ]metro (tele)?sist/i,/index|\/\s*BSA|vol/i,[8,90]],
+    ['DDVE','Diâmetro telediastólico (DDVE)','len',['29436-3'],/LVID|LVEDD|internal (end )?diastolic dimension|left ventricle internal|\bDIVE\s*d?\b|DIVEd|\bDDVE\b|di[aâ]metro (tele)?diast/i,/systol|LVIDs|LVID\s*s\b|DIVEs|DIVE\s*s\b|DSVE|sist|index|\/\s*BSA|vol/i,[12,110]],
+    ['FEsimp','Fração de ejeção (Simpson)','pct',[],/(EF|\bFE|ejection fraction|fra[cç][aã]o de eje[cç][aã]o).*(MOD|simpson|dis[kc]s?|bi-?plane|\bBP\b|A4C|A2C)|(MOD|simpson|dis[kc]s?|bi-?plane).*(EF|ejection fraction)|auto\s*EF|\baEF\b/i,/teich|cube|\bRV\b|right/i,[5,95]],
     ['GLS','Strain longitudinal global (GLS)','pct',[],/global longitudinal (peak )?strain|\bGLS\b|GL\s*PSS|\bGLPS/i,/rate/i,[1,40]],
-    ['AEvol','Volume do AE','vol',[],/\bLA\s*(ES\s*)?Vol|\bLAESV|\bLAV\b|left atri(um|al).*volume/i,/index|\/\s*BSA|LAVI|ratio/i,[5,400]],
-    ['AEdiam','Diâmetro do AE','len',['29469-4'],/\bLA\s*(diam|dimen|dimension|AP|size|major)|\bLAD\b|\bLA\s*dim|left atri(um|al).*(dimension|diam)/i,/ratio|LA\s*\/\s*Ao|Ao\s*\/\s*LA|vol|area/i,[12,95]],
-    ['ADvol','Volume do AD','vol',[],/\bRA\s*(ES\s*)?Vol|\bRAESV|\bRAV\b|right atri(um|al).*volume/i,/index|\/\s*BSA|RAVI|ratio/i,[5,400]],
+    ['AEvol','Volume do AE','vol',[],/\bLA\s*(ES\s*)?Vol|\bLAESV|\bLAV\b|left atri(um|al).*volume|\bVol\.?\s*AE\b|\bAE\s*Vol|volume (do )?AE\b/i,/index|\/\s*BSA|LAVI|ratio/i,[5,400]],
+    ['AEdiam','Diâmetro do AE','len',['29469-4'],/\bLA\s*(diam|dimen|dimension|AP|size|major)|\bLAD\b|\bLA\s*dim|left atri(um|al).*(dimension|diam)|\bAE\s*(diam|dim)|di[aâ]m\.?\s*(do )?AE\b/i,/ratio|LA\s*\/\s*Ao|Ao\s*\/\s*LA|vol|area/i,[12,95]],
+    ['ADvol','Volume do AD','vol',[],/\bRA\s*(ES\s*)?Vol|\bRAESV|\bRAV\b|right atri(um|al).*volume|\bVol\.?\s*AD\b|\bAD\s*Vol|volume (do )?AD\b/i,/index|\/\s*BSA|RAVI|ratio/i,[5,400]],
     ['VDlong','VD comprimento longitudinal','len',[],/RVD3|\bRV\s*(long|length|major)|right ventric.*(longitudinal|length|major)/i,/strain/i,[25,130]],
     ['VDmed','VD diâmetro médio','len',[],/RVD2|\bRV\s*mid|right ventric.*mid/i,null,[8,75]],
     ['TAPSE','TAPSE','len',[],/TAPSE|tricuspid annular plane systolic excursion/i,null,[2,50]],
@@ -3840,11 +3840,11 @@ const PACS=(function(){
     ['FAC','FAC do VD','pct',[],/\bFAC\b|fractional area change/i,null,[5,90]],
     ['AoAnn','Anel aórtico','len',['17996-9'],/\bAo(rtic)?\s*(valve\s*)?ann(ulus|ular)?\b|\bAV\s*ann/i,/vel|area|VTI|grad/i,[6,45]],
     ['AoStj','Junção sinotubular','len',['17995-1'],/sino-?tubular|\bST\s*junc|\bSTJ\b/i,/index|\/\s*BSA/i,[6,65]],
-    ['AoAsc','Aorta ascendente','len',['18012-4'],/\basc(ending)?\.?\s*ao|\bao(rta)?\s*asc|ascending aorta/i,/index|\/\s*BSA/i,[8,90]],
+    ['AoAsc','Aorta ascendente','len',['18012-4'],/\basc(ending)?\.?\s*ao|\bao(rta)?\s*asc|ascending aorta|aorta ascendente/i,/index|\/\s*BSA/i,[8,90]],
     ['AoArchD','Arco transverso distal','len',[],/distal (transverse )?arch|arch\s*dist|transverse arch/i,null,[2,60]],
     ['AoIsthmus','Istmo aórtico','len',[],/isthmus/i,null,[2,60]],
     ['AoArco','Arco aórtico','len',['18011-6'],/\bao(rtic)?\s*arch|\barch\b/i,/vel|grad/i,[6,60]],
-    ['AoRaiz','Raiz da aorta','len',['18015-7'],/\bao(rtic)?\s*root|sinus(es)? of valsalva|\bao\s*sinus|\bAoD\b|\bAo\s*(diam|dimension)\b/i,/index|\/\s*BSA|ratio|LA\s*\/|\/\s*LA/i,[8,85]],
+    ['AoRaiz','Raiz da aorta','len',['18015-7'],/\bao(rtic)?\s*root|sinus(es)? of valsalva|\bao\s*sinus|\bAoD\b|\bAo\s*(diam|dimension)\b|raiz (da )?ao(rta)?/i,/index|\/\s*BSA|ratio|LA\s*\/|\/\s*LA/i,[8,85]],
     ['Elat','E′ lateral','vel',[],/(e['’′]|e\s*prime|\bEa\b|\bEm\b|early diastolic tissue).*lat|lat.*(e['’′]|e\s*prime|\bEa\b|\bEm\b)/i,/E\s*\/\s*e|\/|ratio|a['’′]|s['’′]/i,[1,35]],
     ['Esep','E′ septal','vel',[],/(e['’′]|e\s*prime|\bEa\b|\bEm\b|early diastolic tissue).*(sept|medial)|(sept|medial).*(e['’′]|e\s*prime|\bEa\b|\bEm\b)/i,/E\s*\/\s*e|\/|ratio|a['’′]|s['’′]/i,[1,35]],
     ['MvAnn','Anel mitral','len',[],/\bMV\s*ann|mitral (valve )?ann(ulus|ular)/i,/vel|e['’′]|a['’′]|s['’′]|tissue|TDI|lat|sept|medial|MAPSE|excursion/i,[8,70]],
@@ -3925,7 +3925,75 @@ const PACS=(function(){
     };
   }
   const isSR=ds=>/^1\.2\.840\.10008\.5\.1\.4\.1\.1\.88\./.test(String(S(ds,'00080016')||'')) || S(ds,'00080060')==='SR';
-  return {parse,flatten,map,patient,isSR,S,RULES};
+  /* ---------- REPORT em PDF: recebe o texto já separado em linhas (pdf.js) ----------
+     Reconhece "Nome valor unidade" (ex.: "IVSd 1.0 cm", "SIVd 10 mm", "MV E Vel 0,82 m/s"),
+     inclusive duas colunas na mesma linha e colunas extras de valores (média/mín/máx). */
+  const U_RE=/^(cm\/s|m\/s|mm\/s|mm|cm|m|ml|l|%|cm2|cm²|mmhg|ms|bpm|g|g\/m2|g\/m²|ml\/m2|ml\/m²|cm\/m2|mm\/m2|cm2\/m2|kg|m2|m²)$/i;
+  const NUM_RE=/^[-−]?\d+(?:[.,]\d+)?$/;
+  const PAT_RE=/\b(height|weight|altura|peso|BSA|SC|idade|age|DOB|nasc\w*|birth)\b/i;
+  const pdfNum=s=>parseFloat(String(s).replace('−','-').replace(',','.'));
+  const cleanU=t=>t.replace(/[()\[\]]/g,'');
+  function lineMeas(line){
+    const toks=line.split(/\s+/).filter(Boolean), out=[];
+    let label=[];
+    const skipNums=i=>{ while(i+1<toks.length && NUM_RE.test(toks[i+1])) i++; return i; };
+    for(let i=0;i<toks.length;i++){
+      const t=toks[i];
+      const glued=t.match(/^([-−]?\d+(?:[.,]\d+)?)([a-z%²\/0-9]+)$/i);        // "1.0cm"
+      if(glued && U_RE.test(glued[2]) && label.length){
+        out.push({name:label.join(' '),value:pdfNum(glued[1]),unit:glued[2]}); label=[]; i=skipNums(i); continue;
+      }
+      if(NUM_RE.test(t) && label.length){
+        let j=i+1; while(j<toks.length && NUM_RE.test(toks[j])) j++;             // pula colunas numéricas extras
+        let unit=(j<toks.length && U_RE.test(cleanU(toks[j])))?cleanU(toks[j]):null;
+        const lu=label[label.length-1].match(/^[(\[]([^)\]]+)[)\]]$/);            // "IVSd (cm) 1.0"
+        if(!unit && lu && U_RE.test(lu[1])){ unit=lu[1]; label.pop(); j=skipNums(i); }
+        if(unit && label.length){ out.push({name:label.join(' '),value:pdfNum(t),unit}); label=[]; i=j; continue; }
+        label=[]; i=j-1; continue;                                                  // número sem unidade (razões) — ignora
+      }
+      if(!label.length && U_RE.test(cleanU(t))) continue;                           // unidade solta
+      label.push(t);
+    }
+    return out;
+  }
+  function pdfPatient(txt){
+    const g=re=>{ const m=txt.match(re); return m?m[1].trim():null; };
+    const SEP='[ \\t]*[:：]?[ \\t]*';
+    let nome=g(new RegExp('(?:Nome(?: do paciente)?|Patient(?: Name)?|Paciente|Name)'+SEP+'([^\\n\\t:]{3,70}?)(?=\\s{2,}|\\t|\\n|$|\\s+(?:ID|Sexo|Sex|Gender|Data|Date|DOB|Idade|Age|Nasc\\w*|Birth)\\b)','i'));
+    if(nome){ nome=nome.replace(/\^/g,' , ').replace(/\s+/g,' ').trim(); if(/,/.test(nome)){ const p=nome.split(',').map(x=>x.trim()).filter(Boolean); nome=p.slice(1).concat(p[0]).join(' '); } }
+    const ymd=s=>{ if(!s) return null; const m=s.match(/(\d{1,4})[\/.-](\d{1,2})[\/.-](\d{2,4})/); if(!m) return null;
+      if(m[1].length===4) return [+m[1],+m[2],+m[3]];
+      let d=+m[1],mo=+m[2],y=+m[3]; if(y<100) y+=y>40?1900:2000;
+      if(mo>12 && d<=12){ const t=d; d=mo; mo=t; }                                  // formato americano mm/dd
+      return [y,mo,d]; };
+    const iso=a=>a?a[0]+'-'+String(a[1]).padStart(2,'0')+'-'+String(a[2]).padStart(2,'0'):null;
+    const dob=ymd(g(/(?:DOB|Data de nasc\w*|D\.?\s*Nasc\w*|Nascimento|Birth\s*Date|Date of Birth)[ \t]*[:：]?[ \t]*([\d\/.-]{6,10})/i));
+    const dt=ymd(g(/(?:Data do exame|Data do estudo|Exam Date|Study Date|Date of (?:exam|study)|Data|Date)[ \t]*[:：]?[ \t]*([\d\/.-]{6,10})/i));
+    let idadeMeses=null;
+    if(dob && dt){ idadeMeses=(dt[0]-dob[0])*12+(dt[1]-dob[1])-(dt[2]<dob[2]?1:0); }
+    else { const a=g(/(?:Idade|Age)[ \t]*[:：]?[ \t]*(\d{1,3})/i); if(a) idadeMeses=+a*12; }
+    const sx=g(/(?:Sexo|Sex|Gender|G[eê]nero)[ \t]*[:：]?[ \t]*(M|F|Masc\w*|Fem\w*|Male|Female|Homem|Mulher)\b/i);
+    const h=txt.match(/(?:Altura|Height|Alt\.)[ \t]*[:：]?[ \t]*(\d+(?:[.,]\d+)?)[ \t]*(cm|m)\b/i);
+    const w=txt.match(/(?:Peso|Weight)[ \t]*[:：]?[ \t]*(\d+(?:[.,]\d+)?)[ \t]*(kg|lb)/i);
+    const altura=h?pdfNum(h[1])*(h[2].toLowerCase()==='m'?100:1):null;
+    const peso=w?pdfNum(w[1])*(w[2].toLowerCase()==='lb'?0.4536:1):null;
+    return {
+      nome: nome||'', idadeMeses, idadeAnos: idadeMeses!=null?Math.floor(idadeMeses/12):null,
+      sexo: sx?(/^(M|masc|male|homem)/i.test(sx)?'M':'F'):null,
+      data: iso(dt), peso: peso>0?peso:null, altura: altura>0?altura:null
+    };
+  }
+  function parsePdf(lines){
+    const meas=[]; let ctx='';
+    for(const ln of lines){
+      const ms=lineMeas(ln);
+      if(!ms.length){ const t=ln.trim(); if(t && t.length<=40 && !/\d/.test(t) && !/:/.test(t)) ctx=t; continue; }
+      ms.forEach(m=>{ if(PAT_RE.test(m.name)) return;
+        meas.push({name:m.name,code:'',scheme:'PDF',value:m.value,unit:m.unit.replace('²','2'),unitM:m.unit,mods:[],ctx:ctx?[ctx]:[]}); });
+    }
+    return {meas,p:pdfPatient(lines.join('\n'))};
+  }
+  return {parse,flatten,map,patient,isSR,S,RULES,parsePdf};
 })();
 /* PACS-CORE-END */
 
@@ -3947,6 +4015,8 @@ const PACS=(function(){
       <button id="pacsRootBtn" title="Escolha a pasta onde o Affiniti salva os exames (ex.: C:\\ECO-PACS\\exames)">Pasta dos exames…</button>
       <button id="pacsAltBtn" title="Selecionar diretamente a pasta de UM exame (pendrive, CD, etc.)">Abrir pasta de um exame…</button>
       <input type="file" id="pacsFiles" webkitdirectory multiple style="display:none">
+      <button id="pacsPdfBtn" title="Abrir o REPORT em PDF gerado pelo Affiniti">Abrir PDF do report…</button>
+      <input type="file" id="pacsPdf" accept=".pdf,application/pdf" style="display:none">
       <input id="pacsSearch" placeholder="Buscar paciente…" style="flex:1">
     </div>
     <div class="modal-list" id="pacsList"></div>
@@ -3994,18 +4064,77 @@ const PACS=(function(){
     $('pacsSearch').value='';
     if(!pacsRoot) await loadRoot();
     if(pacsRoot) listExams();
-    else $('pacsList').innerHTML='<div class="pacs-sum">Nenhuma pasta configurada.<br><br>Clique em <b>Pasta dos exames…</b> e escolha <code>C:\\ECO-PACS\\exames</code> (onde o Affiniti 70 grava os exames), ou em <b>Abrir pasta de um exame…</b> para importar direto de um pendrive/CD.</div>';
+    else $('pacsList').innerHTML='<div class="pacs-sum">Nenhuma pasta configurada.<br><br>Clique em <b>Pasta dos exames…</b> e escolha a pasta de rede onde o Affiniti 70 grava os REPORTs (PDF) e as imagens — só na primeira vez. Ou use <b>Abrir PDF do report…</b> para abrir um PDF avulso.</div>';
   }
   function closePacs(){ $('modalPacs').style.display='none'; }
   window.closePacs=closePacs;
 
   const isImgExt=n=>/\.(jpe?g|png|bmp|gif|avi|mp4|wmv|txt|xml|html?|pdf|ini|bat|exe|dll|db|log|inf|lnk)$/i.test(n)||/^DICOMDIR$/i.test(n);
-  async function collect(dir,out,depth){
+  const isPdf=n=>/\.pdf$/i.test(n);
+  async function collect(dir,out,depth,pdfs){
     for await (const [n,h] of dir.entries()){
-      if(h.kind==='file'){ if(!isImgExt(n) && !n.startsWith('.')) out.push(h); }
-      else if(depth<6) await collect(h,out,depth+1);
+      if(h.kind==='file'){ if(pdfs && isPdf(n)) pdfs.push(h); else if(!isImgExt(n) && !n.startsWith('.')) out.push(h); }
+      else if(depth<6) await collect(h,out,depth+1,pdfs);
     }
     return out;
+  }
+  // pasta de um exame: se houver REPORT em PDF, usa o PDF mais recente; senão lê os DICOM
+  async function importFolder(dh,depth){
+    const pdfs=[], dcm=await collect(dh,[],depth||0,pdfs);
+    if(pdfs.length) return importPdf(await newestFile(pdfs));
+    return importHandles(dcm);
+  }
+  async function newestFile(list){
+    let best=null;
+    for(const x of list){ const f=x instanceof File?x:await x.getFile(); if(!best||f.lastModified>best.lastModified) best=f; }
+    return best;
+  }
+
+  /* ---- leitor de PDF (pdf.js, carregado só quando necessário) ---- */
+  let _pdfjs=null;
+  function loadPdfJs(){
+    if(_pdfjs) return _pdfjs;
+    return _pdfjs=new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload=()=>{ const lib=window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(lib); };
+      s.onerror=()=>{ _pdfjs=null; rej(new Error('não foi possível carregar o leitor de PDF (verifique a internet)')); };
+      document.head.appendChild(s);
+    });
+  }
+  // extrai o texto do PDF e remonta as linhas pela posição na página
+  async function pdfLines(file){
+    const lib=await loadPdfJs();
+    const doc=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+    const lines=[];
+    for(let pg=1;pg<=doc.numPages;pg++){
+      const tc=await (await doc.getPage(pg)).getTextContent();
+      const rows=[];
+      tc.items.forEach(it=>{
+        if(!it.str||!it.str.trim()) return;
+        const x=it.transform[4], y=it.transform[5];
+        let r=rows.find(r=>Math.abs(r.y-y)<3); if(!r) rows.push(r={y,items:[]});
+        r.items.push({x,w:it.width||0,s:it.str.trim()});
+      });
+      rows.sort((a,b)=>b.y-a.y);
+      rows.forEach(r=>{
+        r.items.sort((a,b)=>a.x-b.x);
+        let s='', end=null;
+        r.items.forEach(it=>{ if(end!=null){ const gap=it.x-end; s+=gap>8?'   ':gap>1?' ':''; } s+=it.s; end=it.x+it.w; });
+        lines.push(s);
+      });
+    }
+    return lines;
+  }
+  async function importPdf(file){
+    const L=$('pacsList');
+    $('modalPacs').style.display='flex';
+    L.innerHTML='<div class="pacs-sum">Lendo o REPORT em PDF: '+escapeHtml(file.name)+'…</div>';
+    let lines;
+    try{ lines=await pdfLines(file); }
+    catch(e){ console.error('[PACS PDF]',e); L.innerHTML='<div class="pacs-sum warn">Não foi possível ler o PDF: '+escapeHtml(e.message||e)+'</div>'; return; }
+    const r=PACS.parsePdf(lines);
+    apply({p:r.p,meas:r.meas,pdf:{name:file.name,lines}},0,1);
   }
   // nome da pasta gerada pelo receptor (storescp -sp): SOBRENOME^NOME_AAAAMMDD_HHMMSSmmm
   function folderInfo(name){
@@ -4015,18 +4144,32 @@ const PACS=(function(){
     nome=nome.replace(/^(ECO|STUDY|ST)[_-]/i,'').replace(/[\^_]+/g,' ').replace(/\s+/g,' ').trim()||name;
     return {nome,dt,sort:m?m[1]+(m[2]||''):'0'};
   }
+  const pdfCache=new Map();   // evita reler metadados de centenas de PDFs na pasta de rede a cada busca
   async function listExams(){
     const L=$('pacsList');
     try{ if(!(await ensurePerm(pacsRoot))){ L.innerHTML='<div class="pacs-sum">Permissão de leitura negada. Clique em <b>Pasta dos exames…</b>.</div>'; return; } }
     catch(e){ L.innerHTML='<div class="pacs-sum">Clique em <b>Pasta dos exames…</b> para liberar o acesso à pasta.</div>'; return; }
     L.innerHTML='<div class="pacs-sum">Lendo pasta…</div>';
-    const dirs=[]; let looseFiles=0;
-    try{ for await (const [n,h] of pacsRoot.entries()){ if(h.kind==='directory') dirs.push({n,h,...folderInfo(n)}); else if(!isImgExt(n)) looseFiles++; } }
+    const dirs=[], pdfs=[]; let looseFiles=0;
+    try{ for await (const [n,h] of pacsRoot.entries()){ if(h.kind==='directory') dirs.push({n,h,...folderInfo(n)}); else if(isPdf(n)) pdfs.push({n,h}); else if(!isImgExt(n)) looseFiles++; } }
     catch(e){ L.innerHTML='<div class="pacs-sum">Erro ao ler a pasta: '+escapeHtml(e.message||e)+'</div>'; return; }
     dirs.sort((a,b)=>b.sort.localeCompare(a.sort)||a.n.localeCompare(b.n));
     const q=($('pacsSearch').value||'').toLowerCase();
     const rows=dirs.filter(d=>!q||d.nome.toLowerCase().includes(q)||d.n.toLowerCase().includes(q));
     L.innerHTML='';
+    // REPORTs em PDF soltos na pasta: cada PDF = um exame (mais recente primeiro)
+    for(const x of pdfs){ try{ const f=pdfCache.get(x.n)||await x.h.getFile(); pdfCache.set(x.n,f); x.f=f; x.t=f.lastModified; }catch(e){ x.t=0; } }
+    pdfs.sort((a,b)=>b.t-a.t);
+    const pRows=pdfs.filter(x=>!q||x.n.toLowerCase().includes(q)).slice(0,300);
+    pRows.forEach(x=>{
+      const d=x.t?new Date(x.t):null;
+      const dt=d?d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+      const r=document.createElement('div'); r.className='pat-row';
+      r.innerHTML='<span class="pat-nm">📄 '+escapeHtml(x.n.replace(/\.pdf$/i,'').replace(/[\^_]+/g,' '))+'</span><span class="pat-dt">'+escapeHtml(dt)+'</span>';
+      r.title=x.n;
+      r.onclick=()=>importPdf(x.f);
+      L.appendChild(r);
+    });
     if(looseFiles){
       const r=document.createElement('div'); r.className='pat-row';
       r.innerHTML='<span class="pat-nm">📂 Arquivos soltos nesta pasta ('+looseFiles+')</span><span class="pat-dt">importar</span>';
@@ -4037,11 +4180,11 @@ const PACS=(function(){
       const r=document.createElement('div'); r.className='pat-row';
       r.innerHTML='<span class="pat-nm">'+escapeHtml(d.nome)+'</span><span class="pat-dt">'+escapeHtml(d.dt||d.n)+'</span>';
       r.title=d.n;
-      r.onclick=async()=>importHandles(await collect(d.h,[],0));
+      r.onclick=()=>importFolder(d.h,0);
       L.appendChild(r);
     });
-    if(!rows.length && !looseFiles) L.innerHTML='<div class="pacs-sum">Nenhum exame em <b>'+escapeHtml(pacsRoot.name)+'</b> ainda.<br>Envie o exame do Affiniti (Enviar/Store) ou copie a pasta do pendrive para cá.</div>';
-    $('pacsFoot').textContent=pacsRoot.name+' · '+dirs.length+' exame(s) — clique para importar';
+    if(!rows.length && !looseFiles && !pRows.length) L.innerHTML='<div class="pacs-sum">Nenhum exame em <b>'+escapeHtml(pacsRoot.name)+'</b>'+(q?' para essa busca':' ainda')+'.<br>Finalize o exame no Affiniti para o REPORT chegar nesta pasta.</div>';
+    $('pacsFoot').textContent=pacsRoot.name+' · '+(pdfs.length?pdfs.length+' REPORT(s) PDF · ':'')+dirs.length+' pasta(s) — clique para importar';
   }
 
   async function readDs(file){
@@ -4081,12 +4224,12 @@ const PACS=(function(){
 
   function apply(st, nDcm, nStudies){
     const L=$('pacsList');
-    const p=PACS.patient(st.hdr);
+    const p=st.p||PACS.patient(st.hdr);
     const {best,unmapped}=PACS.map(st.meas);
     const filled=[];
     const set=(id,v,label,orig)=>{ const el=$(id); if(!el||v==null||v==='') return; el.value=v; el.classList.add('pacs-fill'); filled.push([label,v,orig]); };
     // identificação
-    if(p.nome) set('pNome',p.nome.toUpperCase(),'Nome','Paciente DICOM');
+    if(p.nome) set('pNome',p.nome.toUpperCase(),'Nome',st.pdf?'REPORT PDF':'Paciente DICOM');
     if(p.idadeAnos!=null){
       const ped=$('modelo')&&$('modelo').value==='pediatrico';
       set('pIdade', ped && p.idadeAnos<2 ? p.idadeMeses+'m' : p.idadeAnos, 'Idade', ped&&p.idadeAnos<2?'meses':'anos');
@@ -4108,17 +4251,21 @@ const PACS=(function(){
 
     const nMed=Object.keys(best).length;
     let h='<div class="pacs-sum">';
-    h+='<div>'+nDcm+' arquivo(s) DICOM lidos · '+st.nSR+' relatório(s) SR · <b>'+nMed+'</b> medida(s) preenchida(s).</div>';
+    if(st.pdf) h+='<div>REPORT em PDF: '+escapeHtml(st.pdf.name)+' · '+st.meas.length+' medida(s) encontradas · <b>'+nMed+'</b> preenchida(s).</div>';
+    else h+='<div>'+nDcm+' arquivo(s) DICOM lidos · '+st.nSR+' relatório(s) SR · <b>'+nMed+'</b> medida(s) preenchida(s).</div>';
+    if(st.pdf && !st.pdf.lines.length) h+='<div class="warn">⚠ Esse PDF não tem texto (é uma imagem/digitalização) — não dá para ler as medidas.</div>';
+    else if(st.pdf && !nMed) h+='<div class="warn">⚠ Nenhuma medida reconhecida no PDF. Abra "Texto lido do PDF" abaixo e envie uma foto para ajuste.</div>';
     if(nStudies>1) h+='<div class="warn">A pasta tinha '+nStudies+' exames diferentes — importado o mais recente com medidas.</div>';
-    if(!st.nSR) h+='<div class="warn">⚠ Nenhum SR (Structured Report) de medidas nesse exame. No Affiniti 70, habilite o envio do SR no destino DICOM (Setup ▸ DICOM ▸ Store ▸ "Structured Reports"/SR) e reenvie o exame. Só os dados do paciente foram importados.</div>';
+    if(!st.pdf && !st.nSR) h+='<div class="warn">⚠ Nenhum SR (Structured Report) de medidas nesse exame. No Affiniti 70, habilite o envio do SR no destino DICOM (Setup ▸ DICOM ▸ Store ▸ "Structured Reports"/SR) e reenvie o exame. Só os dados do paciente foram importados.</div>';
     h+='<h4>Preenchido automaticamente</h4><table>';
     filled.forEach(f=>{ h+='<tr><td>'+escapeHtml(f[0])+'</td><td class="v">'+escapeHtml(String(f[1]).replace('.',','))+'</td><td class="o">'+escapeHtml(f[2]||'')+'</td></tr>'; });
     h+='</table>';
     if(unmapped.length){
-      h+='<details><summary>'+unmapped.length+' medida(s) do SR sem campo correspondente no laudo (Doppler, gradientes etc. — digite manualmente se necessário)</summary><table>';
+      h+='<details><summary>'+unmapped.length+' medida(s) do exame sem campo correspondente no laudo (Doppler, gradientes etc. — digite manualmente se necessário)</summary><table>';
       unmapped.forEach(m=>{ h+='<tr><td>'+escapeHtml(m.name)+(m.mods.length?' <span class="o">('+escapeHtml(m.mods.join('; '))+')</span>':'')+'</td><td class="v">'+escapeHtml(String(Math.round(m.value*100)/100).replace('.',','))+' '+escapeHtml(m.unit)+'</td></tr>'; });
       h+='</table></details>';
     }
+    if(st.pdf && st.pdf.lines.length) h+='<details><summary>Texto lido do PDF ('+st.pdf.lines.length+' linhas)</summary><div style="max-height:220px;overflow:auto;font:11px/1.35 ui-monospace,monospace;white-space:pre-wrap;margin-top:4px">'+escapeHtml(st.pdf.lines.join('\n'))+'</div></details>';
     h+='<div class="hint" style="margin-top:8px">Campos importados ficam destacados em verde por alguns segundos. <b>Revise os valores antes de liberar o laudo.</b></div>';
     h+='<div style="margin-top:10px;text-align:right"><button id="pacsOk" style="background:var(--accent-d);color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer">OK</button></div></div>';
     L.innerHTML=h;
@@ -4130,8 +4277,15 @@ const PACS=(function(){
   b.onclick=openPacs;
   $('pacsRootBtn').onclick=pickRoot;
   $('pacsAltBtn').onclick=()=>$('pacsFiles').click();
-  $('pacsFiles').onchange=e=>{ const fs=[...e.target.files].filter(f=>!isImgExt(f.name)); e.target.value=''; if(fs.length) importFiles(fs); };
-  $('pacsSearch').addEventListener('input',()=>{ if(pacsRoot) listExams(); });
+  $('pacsFiles').onchange=async e=>{
+    const all=[...e.target.files]; e.target.value='';
+    const pdfs=all.filter(f=>isPdf(f.name));
+    if(pdfs.length) return importPdf(await newestFile(pdfs));
+    const fs=all.filter(f=>!isImgExt(f.name)); if(fs.length) importFiles(fs);
+  };
+  $('pacsPdfBtn').onclick=()=>$('pacsPdf').click();
+  $('pacsPdf').onchange=e=>{ const f=e.target.files[0]; e.target.value=''; if(f) importPdf(f); };
+  let _pacsQ; $('pacsSearch').addEventListener('input',()=>{ clearTimeout(_pacsQ); _pacsQ=setTimeout(()=>{ if(pacsRoot) listExams(); },300); });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape' && $('modalPacs').style.display!=='none') closePacs();
     const mod=navigator.platform.toLowerCase().includes('mac')?e.metaKey:e.ctrlKey;
